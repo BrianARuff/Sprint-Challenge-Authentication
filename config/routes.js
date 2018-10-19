@@ -28,15 +28,19 @@ function register(req, res) {
   const hash = bcrypt.hashSync(password, 12);
   password = hash;
   username = username.toLowerCase();
+  console.log(`${username}, ${password}`);
   db("users")
     .insert({ username, password })
-    .then(count =>
-      res.status(201).json({
+    .then(count => {
+      const token = generateToken({username, password});
+      req.session.cookie.token = token;
+      return res.status(201).json({
         message: "successfully registered",
         count: count[0],
-        user: { username, password }
-      })
-    )
+        user: { username, password },
+        token: token
+      });
+    })
     .catch(error => res.status(500).json(error));
 }
 
@@ -49,6 +53,7 @@ function login(req, res) {
     .then(user => {
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
+        req.session.cookie.token = token;
         res.status(200).json({ message: "Login successful", token, user });
       } else {
         res.status(401).json({ message: "Invalid username or password" });

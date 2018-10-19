@@ -6,7 +6,7 @@ const sessionConfig = {
   secret: 'for the greater good',
   name: 'token',
   resave: false,
-  saveUnitialized: false,
+  saveUninitialized: false,
   cookie: {
     secure: false,
     maxAge: 1000 * 60 * 60,
