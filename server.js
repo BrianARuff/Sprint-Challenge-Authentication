@@ -1,5 +1,18 @@
 const express = require('express');
 const cors = require('cors');
+const session = require('express-session');
+
+const sessionConfig = {
+  secret: 'for the greater good',
+  name: 'token',
+  resave: false,
+  saveUnitialized: false,
+  cookie: {
+    secure: false,
+    maxAge: 1000 * 60 * 60,
+    httpOnly: true
+  }
+}
 
 const configureRoutes = require('./config/routes');
 
@@ -12,6 +25,7 @@ const corsOptions = {
 
 server.use(express.json());
 server.use(cors());
+server.use(session(sessionConfig));
 
 configureRoutes(server);
 
